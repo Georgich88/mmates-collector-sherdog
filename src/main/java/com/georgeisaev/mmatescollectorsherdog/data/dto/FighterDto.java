@@ -1,7 +1,7 @@
 package com.georgeisaev.mmatescollectorsherdog.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -14,59 +14,60 @@ import java.time.LocalDate;
 @Builder
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Schema(name = "Fighter details")
 public class FighterDto {
 
-    @JsonProperty("Id")
+    @Schema(name = "Id")
     String id;
-    @JsonProperty("Sherdog url")
+    @Schema(name = "Sherdog url")
     String sherdogUrl;
-    @JsonProperty("Sherdog picture url")
+    @Schema(name = "Sherdog picture url")
     String pictureUrl;
-    @JsonProperty("Name")
+    @Schema(name = "Name")
     String name;
-    @JsonProperty("Nickname")
+    @Schema(name = "Nickname")
     String nickname;
-    @JsonProperty("Birth date")
+    @Schema(name = "Birth date")
     LocalDate birthDate;
-    @JsonProperty("Address")
+    @Schema(name = "Address")
     String addressLocality;
-    @JsonProperty("Nationality")
+    @Schema(name = "Nationality")
     String nationality;
-    @JsonProperty("Height, ft")
+    @Schema(name = "Height, ft")
     String heightFt;
-    @JsonProperty("Height, cm")
-    BigDecimal heightCm;
-    @JsonProperty("Weight, lbs")
-    BigDecimal weightLbs;
-    @JsonProperty("Weight, lbs")
-    BigDecimal weightCm;
-    @JsonProperty("Association")
+    @Schema(name = "Height, cm")
+    String heightCm;
+    @Schema(name = "Weight, lbs")
+    String weightLbs;
+    @Schema(name = "Weight, lbs")
+    String weightCm;
+    @Schema(name = "Association")
     String association;
-    @JsonProperty("Weight class")
+    @Schema(name = "Weight class")
     String weightClass;
-    @JsonProperty("Wins")
+    @Schema(name = "Wins")
     Integer winsTotals;
-    @JsonProperty("Wins, KO/TKO")
+    @Schema(name = "Wins, KO/TKO")
     Integer winsKoTko;
-    @JsonProperty("Wins, submission")
+    @Schema(name = "Wins, submission")
     Integer winsSubmissions;
-    @JsonProperty("Wins, decisions")
+    @Schema(name = "Wins, decisions")
     Integer winsDecisions;
-    @JsonProperty("Wins, other")
+    @Schema(name = "Wins, other")
     Integer winsOther;
-    @JsonProperty("Losses")
+    @Schema(name = "Losses")
     Integer lossesTotals;
-    @JsonProperty("Losses, KO/TKO")
+    @Schema(name = "Losses, KO/TKO")
     Integer lossesKoTko;
-    @JsonProperty("Losses, submission")
+    @Schema(name = "Losses, submission")
     Integer lossesSubmissions;
-    @JsonProperty("Losses, decisions")
+    @Schema(name = "Losses, decisions")
     Integer lossesDecisions;
-    @JsonProperty("Losses, other")
+    @Schema(name = "Losses, other")
     Integer lossesOther;
-    @JsonProperty("Draws")
+    @Schema(name = "Draws")
     Integer draws;
-    @JsonProperty("No contest")
+    @Schema(name = "No contest")
     Integer nc;
 
 }

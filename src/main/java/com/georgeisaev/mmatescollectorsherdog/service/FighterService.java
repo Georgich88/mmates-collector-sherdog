@@ -1,9 +1,11 @@
 package com.georgeisaev.mmatescollectorsherdog.service;
 
 import com.georgeisaev.mmatescollectorsherdog.data.dto.FighterDto;
+import com.georgeisaev.mmatescollectorsherdog.data.entity.Fighter;
+import reactor.core.publisher.Mono;
 
 public interface FighterService extends ParserService<FighterDto> {
 
-    void save(FighterDto fighterDto);
+    Mono<FighterDto> save(FighterDto fighterDto);
 
 }

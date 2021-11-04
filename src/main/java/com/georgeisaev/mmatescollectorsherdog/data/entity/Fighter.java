@@ -28,9 +28,9 @@ public class Fighter {
     String addressLocality;
     String nationality;
     String heightFt;
-    BigDecimal heightCm;
-    BigDecimal weightLbs;
-    BigDecimal weightCm;
+    String heightCm;
+    String weightLbs;
+    String weightCm;
     String association;
     String weightClass;
     Long winsTotals;
