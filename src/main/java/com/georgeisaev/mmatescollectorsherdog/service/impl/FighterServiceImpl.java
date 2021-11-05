@@ -21,7 +21,9 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
+import static com.georgeisaev.mmatescollectorsherdog.common.SherdogParserConstants.BASE_HTTPS_URL;
 import static java.lang.Integer.parseInt;
 
 @RequiredArgsConstructor
@@ -31,6 +33,8 @@ import static java.lang.Integer.parseInt;
 public class FighterServiceImpl implements FighterService {
 
     private static final String MSG_ERR_CANNOT_PARSE_PROPERTY = "Cannot parse property {} from {}";
+    private static final String DRAWS_ELEMENT = "Draws";
+    private static final String NC_ELEMENT = "N/C";
 
     FighterMapper fighterMapper;
     FighterRepository fighterRepository;
@@ -104,9 +108,9 @@ public class FighterServiceImpl implements FighterService {
         Elements drawsNc = doc.select(".right_side .bio_graph .card");
         for (Element element : drawsNc) {
             String html = element.select("span.result").html();
-            if ("Draws".equals(html)) {
+            if (DRAWS_ELEMENT.equals(html)) {
                 fighterBuilder.draws(parseInt(element.select("span.counter").html()));
-            } else if ("N/C".equals(html)) {
+            } else if (NC_ELEMENT.equals(html)) {
                 fighterBuilder.nc(parseInt(element.select("span.counter").html()));
             }
 
@@ -114,7 +118,7 @@ public class FighterServiceImpl implements FighterService {
 
         try {
             Elements picture = doc.select(".bio_fighter .content img[itemprop=\"image\"]");
-            String pictureUrl = "https://www.sherdog.com" + picture.attr("src").trim();
+            String pictureUrl = BASE_HTTPS_URL + picture.attr("src").trim();
             fighterBuilder.pictureUrl(pictureUrl);
         } catch (Exception e) {
             log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, "pictureUrl", url, e);
@@ -123,7 +127,7 @@ public class FighterServiceImpl implements FighterService {
         return fighterBuilder.build();
     }
 
-    private void extractRecordByMethodProperty(String url, Elements methods, int method, String property, Consumer<Integer> setter) {
+    private void extractRecordByMethodProperty(String url, Elements methods, int method, String property, IntConsumer setter) {
         try {
             setter.accept(parseInt(methods.get(method).html().split(" ")[0]));
         } catch (Exception e) {
@@ -131,7 +135,7 @@ public class FighterServiceImpl implements FighterService {
         }
     }
 
-    private void extractIntProperty(String url, Document doc, String selector, String property, Consumer<Integer> setter) {
+    private void extractIntProperty(String url, Document doc, String selector, String property, IntConsumer setter) {
         try {
             Elements name = doc.select(selector);
             setter.accept(parseInt(name.get(0).html()));
