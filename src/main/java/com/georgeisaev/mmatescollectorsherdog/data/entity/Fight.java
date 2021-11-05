@@ -9,9 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-import java.time.ZonedDateTime;
-
-import static com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightResult.NOT_HAPPENED;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -20,14 +18,14 @@ import static com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightResul
 public class Fight {
 
     String name;
-    Event event;
+    String eventId;
     String firstFighterId;
     String secondFighterId;
-    ZonedDateTime date;
-    FightResult result = NOT_HAPPENED;
+    LocalDate date;
+    FightResult result;
     WinMethod winMethod;
-    int winTime; // in seconds
-    int winRound;
+    Integer winTime;
+    Integer winRound;
     FightType type;
 
 }

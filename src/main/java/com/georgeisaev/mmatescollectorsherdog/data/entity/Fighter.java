@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,5 +45,6 @@ public class Fighter {
     Integer lossesOther;
     Integer draws;
     Integer nc;
+    List<Fight> fights;
 
 }

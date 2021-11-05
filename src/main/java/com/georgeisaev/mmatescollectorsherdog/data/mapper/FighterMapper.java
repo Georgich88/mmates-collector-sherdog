@@ -4,7 +4,7 @@ import com.georgeisaev.mmatescollectorsherdog.data.dto.FighterDto;
 import com.georgeisaev.mmatescollectorsherdog.data.entity.Fighter;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(imports = {FightMapper.class})
 public interface FighterMapper {
 
     Fighter toEntity(FighterDto dto);
