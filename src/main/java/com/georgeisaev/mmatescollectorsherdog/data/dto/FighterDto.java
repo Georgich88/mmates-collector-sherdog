@@ -7,8 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import static com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils.defineIdFromSherdogUrl;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
@@ -69,5 +70,10 @@ public class FighterDto {
     Integer draws;
     @Schema(name = "No contest")
     Integer nc;
+
+    public void setSherdogUrl(String sherdogUrl) {
+        this.sherdogUrl = sherdogUrl;
+        this.id = defineIdFromSherdogUrl(sherdogUrl);
+    }
 
 }
