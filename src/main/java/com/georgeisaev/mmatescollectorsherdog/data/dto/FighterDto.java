@@ -4,16 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-
-import static com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils.defineIdFromSherdogUrl;
+import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-@Data
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(name = "Fighter details")
 public class FighterDto {
@@ -70,10 +71,7 @@ public class FighterDto {
     Integer draws;
     @Schema(name = "No contest")
     Integer nc;
-
-    public void setSherdogUrl(String sherdogUrl) {
-        this.sherdogUrl = sherdogUrl;
-        this.id = defineIdFromSherdogUrl(sherdogUrl);
-    }
+    @Schema(name = "Fights")
+    List<FightDto> fights;
 
 }

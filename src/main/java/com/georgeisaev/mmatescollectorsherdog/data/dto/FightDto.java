@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
@@ -20,10 +20,10 @@ import java.time.LocalDateTime;
 public class FightDto {
 
     String name;
-    EventDto event;
+    String eventId;
     String firstFighterId;
     String secondFighterId;
-    LocalDateTime date;
+    LocalDate date;
     FightResult result;
     WinMethod winMethod;
     Integer winTime;
