@@ -8,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.jsoup.select.Selector;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -32,7 +33,8 @@ public class ParserUtils {
         return Jsoup.connect(url)
                 .timeout(PARSING_TIMEOUT)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                .referrer("https://www.google.com").get();
+                .referrer("https://www.google.com")
+                .get();
     }
 
     /**
@@ -71,6 +73,16 @@ public class ParserUtils {
         }
     }
 
+    /**
+     * Extracts field value and set it to the object
+     *
+     * @param doc          an HTML Document.
+     * @param selector     a {@link Selector} CSS-like query
+     * @param propertyName a field name
+     * @param setter       an object setter
+     * @param extractor    an extractor of a field value
+     * @param <T>          type of field
+     */
     public static <T> void extractAndSet(Document doc, String selector, String propertyName, Consumer<T> setter,
                                          Function<Elements, T> extractor) {
         try {
