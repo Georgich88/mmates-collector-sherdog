@@ -9,6 +9,6 @@ public interface FighterMapper {
 
     Fighter toEntity(FighterDto dto);
 
-    FighterDto toEntity(Fighter dto);
+    FighterDto toDto(Fighter dto);
 
 }

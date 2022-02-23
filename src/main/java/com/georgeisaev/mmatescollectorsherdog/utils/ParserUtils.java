@@ -3,16 +3,23 @@ package com.georgeisaev.mmatescollectorsherdog.utils;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightResult;
 import com.georgeisaev.mmatescollectorsherdog.exception.IllegalSherdogUrlException;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.georgeisaev.mmatescollectorsherdog.common.SherdogParserConstants.PARSING_TIMEOUT;
 
+@Slf4j
 @UtilityClass
 public class ParserUtils {
+
+    public static final String MSG_ERR_CANNOT_PARSE_PROPERTY = "Cannot parse property {} from {}";
 
     /**
      * Parses a URL with all the required parameters
@@ -61,6 +68,15 @@ public class ParserUtils {
             return FightResult.NO_CONTEST;
         } else {
             return FightResult.NOT_HAPPENED;
+        }
+    }
+
+    public static <T> void extractAndSet(Document doc, String selector, String propertyName, Consumer<T> setter,
+                                         Function<Elements, T> extractor) {
+        try {
+            setter.accept(extractor.apply(doc.select(selector)));
+        } catch (Exception e) {
+            log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, propertyName, doc.baseUri(), e);
         }
     }
 

@@ -7,6 +7,7 @@ import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightResult;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightType;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.WinMethod;
 import com.georgeisaev.mmatescollectorsherdog.data.mapper.FighterMapper;
+import com.georgeisaev.mmatescollectorsherdog.data.selector.FighterSelectors;
 import com.georgeisaev.mmatescollectorsherdog.exception.ParserException;
 import com.georgeisaev.mmatescollectorsherdog.repository.FighterRepository;
 import com.georgeisaev.mmatescollectorsherdog.service.FighterService;
@@ -37,7 +38,9 @@ import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
 import static com.georgeisaev.mmatescollectorsherdog.common.SherdogParserConstants.BASE_HTTPS_URL;
+import static com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils.MSG_ERR_CANNOT_PARSE_PROPERTY;
 import static com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils.defineIdFromSherdogUrl;
+import static com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils.extractAndSet;
 import static java.lang.Integer.parseInt;
 import static java.util.Comparator.nullsFirst;
 
@@ -47,26 +50,25 @@ import static java.util.Comparator.nullsFirst;
 @Service
 public class FighterServiceImpl implements FighterService {
 
-    private static final String MSG_ERR_CANNOT_PARSE_PROPERTY = "Cannot parse property {} from {}";
     private static final String DRAWS_ELEMENT = "Draws";
     private static final String NC_ELEMENT = "N/C";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER_MMM_DD_YYYY = DateTimeFormatter.ofPattern("MMM / dd / yyyy", Locale.US);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER_MMM_DD_YYYY = DateTimeFormatter.ofPattern("MMM / dd / " +
+            "yyyy", Locale.US);
 
-    FighterMapper fighterMapper;
+    // Repositories
     FighterRepository fighterRepository;
 
-    private static final DateTimeFormatter DATE_FORMAT_YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    // Mappers
+    FighterMapper fighterMapper;
+
+    // Properties
+    FighterSelectors selectors;
+
+    private static final DateTimeFormatter DATE_FORMAT_YYYY_MM_DD = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 
     // Selectors
-    public static final String SELECTOR_FIGHTER_NAME_ELEMENT = ".bio_fighter h1 span.fn";
-    public static final String SELECTOR_FIGHTER_NICKNAME_ELEMENT = ".bio_fighter span.nickname em";
-    public static final String SELECTOR_FIGHTER_BIRTH_DATE_ELEMENT = "span[itemprop=\"birthDate\"]";
-    public static final String SELECTOR_FIGHTER_ADDRESS_LOCALITY_ELEMENT = "span[itemprop=\"addressLocality\"]";
-    public static final String SELECTOR_FIGHTER_NATIONALITY_ELEMENT = "strong[itemprop=\"nationality\"]";
-    public static final String SELECTOR_FIGHTER_HEIGHT_FEET_ELEMENT = ".size_info .height strong";
-    public static final String SELECTOR_FIGHTER_HEIGHT_CM_ELEMENT = ".size_info .height";
     public static final String SELECTOR_FIGHTER_WEIGHT_LBS_ELEMENT = ".size_info .weight strong";
-    public static final String SELECTOR_FIGHTER_WINS_ELEMENT = ".bio_graph .counter";
+    public static final String SELECTOR_FIGHTER_WINS_ELEMENT = ".winloses.win";
     public static final String SELECTOR_FIGHTER_WINS_METHODS_ELEMENTS = ".bio_graph:first-of-type .graph_tag";
     public static final String SELECTOR_FIGHTER_LOSSES_ELEMENTS = ".bio_graph.loser .counter";
     public static final String SELECTOR_FIGHTER_LOSSES_METHODS_ELEMENT = ".bio_graph.loser .graph_tag";
@@ -86,71 +88,82 @@ public class FighterServiceImpl implements FighterService {
     private static final int COLUMN_TIME = 5;
 
     @Override
-    public Mono<FighterDto> save(FighterDto fighterDto) {
-        return fighterRepository.save(fighterMapper.toEntity(fighterDto))
-                .map(fighterMapper::toEntity);
+    public Mono<FighterDto> save(Mono<FighterDto> fighter) {
+        return fighter.map(fighterMapper::toEntity)
+                .flatMap(fighterRepository::save)
+                .map(fighterMapper::toDto);
+    }
+
+    @Override
+    public Mono<FighterDto> findById(String fighterId) {
+        return fighterRepository.findById(fighterId)
+                .map(fighterMapper::toDto);
     }
 
     @Override
     public FighterDto parse(final String url) throws IOException, ParseException, ParserException {
-        log.info("Start. Parse fighterBuilder from {}", url);
+        log.info("Start. Parse Fighter from {}", url);
         Document doc = ParserUtils.parseDocument(url);
-        FighterDto.FighterDtoBuilder fighterBuilder = FighterDto.builder();
-        fighterBuilder.sherdogUrl(url);
-        fighterBuilder.id(defineIdFromSherdogUrl(url));
-        extractTextProperty(url, doc, SELECTOR_FIGHTER_NAME_ELEMENT, "name", fighterBuilder::name);
-        extractTextProperty(url, doc, SELECTOR_FIGHTER_NICKNAME_ELEMENT, "nickname", fighterBuilder::nickname);
-        extractTextProperty(url, doc, SELECTOR_FIGHTER_ADDRESS_LOCALITY_ELEMENT, "addressLocality", fighterBuilder::addressLocality);
-        extractTextProperty(url, doc, SELECTOR_FIGHTER_NATIONALITY_ELEMENT, "nationality", fighterBuilder::nationality);
+        FighterDto.FighterDtoBuilder builder = FighterDto.builder();
+        builder.sherdogUrl(url);
+        builder.id(defineIdFromSherdogUrl(url));
+        extractAndSetText(doc, selectors.getName(), "name", builder::name);
+        extractAndSetText(doc, selectors.getNickname(), "nickname", builder::nickname);
+        extractAndSetText(doc, selectors.getAddressLocality(), "addressLocality", builder::addressLocality);
+        extractAndSetText(doc, selectors.getAddressNationality(), "nationality", builder::nationality);
         // Birthday
         try {
-            Elements birthday = doc.select(SELECTOR_FIGHTER_BIRTH_DATE_ELEMENT);
-            fighterBuilder.birthDate(LocalDate.parse(birthday.get(0).html(), DATE_FORMAT_YYYY_MM_DD));
+            Elements birthday = doc.select(selectors.getBirthday());
+            builder.birthDate(LocalDate.parse(birthday.get(0).html(), DATE_FORMAT_YYYY_MM_DD));
         } catch (Exception e) {
             log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, "birthDate", url, e);
         }
         // height
-        extractTextProperty(url, doc, SELECTOR_FIGHTER_HEIGHT_FEET_ELEMENT, "heightFt", fighterBuilder::heightFt);
-        extractTextProperty(url, doc, SELECTOR_FIGHTER_HEIGHT_CM_ELEMENT, "heightCm", fighterBuilder::heightCm);
+        extractAndSetText(doc, selectors.getHeightFeet(), "heightFt", builder::heightFt);
+        extractAndSetText(doc, selectors.getHeightCm(), "heightCm", builder::heightCm);
         // weight
-        extractTextProperty(url, doc, SELECTOR_FIGHTER_WEIGHT_LBS_ELEMENT, "weightLbs", fighterBuilder::weightLbs);
+        extractAndSetText(doc, SELECTOR_FIGHTER_WEIGHT_LBS_ELEMENT, "weightLbs", builder::weightLbs);
         // wins
-        extractIntProperty(url, doc, SELECTOR_FIGHTER_WINS_ELEMENT, "winsTotals", fighterBuilder::winsTotals);
+        extractIntProperty(url, doc, SELECTOR_FIGHTER_WINS_ELEMENT, "winsTotals", builder::winsTotals);
         Elements winsMethods = doc.select(SELECTOR_FIGHTER_WINS_METHODS_ELEMENTS);
-        extractRecordByMethodProperty(url, winsMethods, METHOD_KO, "winsKoTko", fighterBuilder::winsKoTko);
-        extractRecordByMethodProperty(url, winsMethods, METHOD_SUBMISSION, "winsSubmissions", fighterBuilder::winsSubmissions);
-        extractRecordByMethodProperty(url, winsMethods, METHOD_DECISION, "winsDecisions", fighterBuilder::winsDecisions);
-        extractRecordByMethodProperty(url, winsMethods, METHOD_OTHERS, "winsOther", fighterBuilder::winsOther);
+        extractRecordByMethodProperty(url, winsMethods, METHOD_KO, "winsKoTko", builder::winsKoTko);
+        extractRecordByMethodProperty(url, winsMethods, METHOD_SUBMISSION, "winsSubmissions",
+                builder::winsSubmissions);
+        extractRecordByMethodProperty(url, winsMethods, METHOD_DECISION, "winsDecisions",
+                builder::winsDecisions);
+        extractRecordByMethodProperty(url, winsMethods, METHOD_OTHERS, "winsOther", builder::winsOther);
         // loses
-        extractIntProperty(url, doc, SELECTOR_FIGHTER_LOSSES_ELEMENTS, "lossesTotals", fighterBuilder::lossesTotals);
+        extractIntProperty(url, doc, SELECTOR_FIGHTER_LOSSES_ELEMENTS, "lossesTotals", builder::lossesTotals);
         Elements lossesMethods = doc.select(SELECTOR_FIGHTER_LOSSES_METHODS_ELEMENT);
-        extractRecordByMethodProperty(url, lossesMethods, METHOD_KO, "lossesKoTko", fighterBuilder::lossesKoTko);
-        extractRecordByMethodProperty(url, lossesMethods, METHOD_SUBMISSION, "lossesSubmissions", fighterBuilder::lossesSubmissions);
-        extractRecordByMethodProperty(url, lossesMethods, METHOD_DECISION, "lossesDecisions", fighterBuilder::lossesDecisions);
-        extractRecordByMethodProperty(url, lossesMethods, METHOD_OTHERS, "lossesOther", fighterBuilder::lossesOther);
+        extractRecordByMethodProperty(url, lossesMethods, METHOD_KO, "lossesKoTko", builder::lossesKoTko);
+        extractRecordByMethodProperty(url, lossesMethods, METHOD_SUBMISSION, "lossesSubmissions",
+                builder::lossesSubmissions);
+        extractRecordByMethodProperty(url, lossesMethods, METHOD_DECISION, "lossesDecisions",
+                builder::lossesDecisions);
+        extractRecordByMethodProperty(url, lossesMethods, METHOD_OTHERS, "lossesOther", builder::lossesOther);
 
         // draws and NC
         Elements drawsNc = doc.select(".right_side .bio_graph .card");
         for (Element element : drawsNc) {
             String html = element.select("span.result").html();
             if (DRAWS_ELEMENT.equals(html)) {
-                fighterBuilder.draws(parseInt(element.select("span.counter").html()));
+                builder.draws(parseInt(element.select("span.counter").html()));
             } else if (NC_ELEMENT.equals(html)) {
-                fighterBuilder.nc(parseInt(element.select("span.counter").html()));
+                builder.nc(parseInt(element.select("span.counter").html()));
             }
 
         }
         try {
             Elements picture = doc.select(".bio_fighter .content img[itemprop=\"image\"]");
             String pictureUrl = BASE_HTTPS_URL + picture.attr("src").trim();
-            fighterBuilder.pictureUrl(pictureUrl);
+            builder.pictureUrl(pictureUrl);
         } catch (Exception e) {
             log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, "pictureUrl", url, e);
         }
         Elements fightTables = doc.select(".fight_history");
         log.info("Found {} fight history tables", fightTables.size());
-        fighterBuilder.fights(new ArrayList<>());
-        FighterDto fighter = fighterBuilder.build();
+        builder.fights(new ArrayList<>());
+        FighterDto fighter = builder.build();
 
         fightTables.stream()
                 // excluding upcoming fights
@@ -175,10 +188,11 @@ public class FighterServiceImpl implements FighterService {
 
         log.info("Found {} fights for {}", fighter.getFights().size(), fighter.getName());
 
-        return fighterBuilder.build();
+        return builder.build();
     }
 
-    private void extractRecordByMethodProperty(String url, Elements methods, int method, String property, IntConsumer setter) {
+    private void extractRecordByMethodProperty(String url, Elements methods, int method, String property,
+                                               IntConsumer setter) {
         try {
             setter.accept(parseInt(methods.get(method).html().split(" ")[0]));
         } catch (Exception e) {
@@ -190,15 +204,6 @@ public class FighterServiceImpl implements FighterService {
         try {
             Elements name = doc.select(selector);
             setter.accept(parseInt(name.get(0).html()));
-        } catch (Exception e) {
-            log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, property, url, e);
-        }
-    }
-
-    private void extractTextProperty(String url, Document doc, String selector, String property, Consumer<String> setter) {
-        try {
-            Elements name = doc.select(selector);
-            setter.accept(name.get(0).html());
         } catch (Exception e) {
             log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, property, url, e);
         }
@@ -340,5 +345,12 @@ public class FighterServiceImpl implements FighterService {
         }
 
     }
+
+    // NEW METHODS
+
+    public void extractAndSetText(Document doc, String selector, String propertyName, Consumer<String> setter) {
+        extractAndSet(doc, selector, propertyName, setter, elements -> elements.get(0).html());
+    }
+
 
 }

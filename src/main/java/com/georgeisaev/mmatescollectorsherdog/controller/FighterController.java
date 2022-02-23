@@ -6,13 +6,17 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.net.URI;
 import java.text.ParseException;
 
 @RequiredArgsConstructor
@@ -24,13 +28,19 @@ public class FighterController {
     FighterService fighterService;
 
     @PostMapping
-    public ResponseEntity<Mono<FighterDto>> save(@RequestBody FighterDto fighterDto) {
-        return ResponseEntity.ok(fighterService.save(fighterDto));
+    public Publisher<ResponseEntity<FighterDto>> save(@RequestBody Mono<FighterDto> fighterDto) {
+        return fighterService.save(fighterDto)
+                .map(f -> ResponseEntity.created(URI.create("/fighters/" + f.getId())).body(f));
+    }
+
+    @GetMapping("/{fighterId}")
+    public Publisher<ResponseEntity<FighterDto>> findById(@PathVariable String fighterId) {
+        return fighterService.findById(fighterId).map(ResponseEntity::ok);
     }
 
     @PostMapping("/parsings")
-    public ResponseEntity<Mono<FighterDto>> parse(@RequestBody String sherdogUrl) throws IOException, ParseException {
-        return ResponseEntity.ok(Mono.just(fighterService.parse(sherdogUrl)));
+    public Publisher<ResponseEntity<FighterDto>> parse(@RequestBody String url) throws IOException, ParseException {
+        return Mono.just(ResponseEntity.ok(fighterService.parse(url)));
     }
 
 }
