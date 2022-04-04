@@ -30,7 +30,7 @@ public class Fighter {
     String heightFt;
     String heightCm;
     String weightLbs;
-    String weightCm;
+    String weightKg;
     String association;
     String weightClass;
     Long winsTotals;

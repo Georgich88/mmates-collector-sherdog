@@ -11,6 +11,7 @@ import com.georgeisaev.mmatescollectorsherdog.data.selector.FighterSelectors;
 import com.georgeisaev.mmatescollectorsherdog.exception.ParserException;
 import com.georgeisaev.mmatescollectorsherdog.repository.FighterRepository;
 import com.georgeisaev.mmatescollectorsherdog.service.FighterService;
+import com.georgeisaev.mmatescollectorsherdog.utils.DateTimeUtils;
 import com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -114,7 +115,7 @@ public class FighterServiceImpl implements FighterService {
         // Birthday
         try {
             Elements birthday = doc.select(selectors.getBirthday());
-            builder.birthDate(LocalDate.parse(birthday.get(0).html(), DATE_FORMAT_YYYY_MM_DD));
+            builder.birthDate(DateTimeUtils.parseDate(birthday.get(0).html()));
         } catch (Exception e) {
             log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, "birthDate", url, e);
         }
@@ -122,7 +123,8 @@ public class FighterServiceImpl implements FighterService {
         extractAndSetText(doc, selectors.getHeightFeet(), "heightFt", builder::heightFt);
         extractAndSetText(doc, selectors.getHeightCm(), "heightCm", builder::heightCm);
         // weight
-        extractAndSetText(doc, SELECTOR_FIGHTER_WEIGHT_LBS_ELEMENT, "weightLbs", builder::weightLbs);
+        extractAndSetText(doc, selectors.getWeightLbs(), "weightLbs", builder::weightLbs);
+        extractAndSetText(doc, selectors.getWeightKg(), "weightKg", builder::weightKg);
         // wins
         extractIntProperty(url, doc, SELECTOR_FIGHTER_WINS_ELEMENT, "winsTotals", builder::winsTotals);
         Elements winsMethods = doc.select(SELECTOR_FIGHTER_WINS_METHODS_ELEMENTS);

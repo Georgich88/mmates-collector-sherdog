@@ -19,5 +19,8 @@ public class FighterSelectors {
     String addressNationality;
     String heightFeet;
     String heightCm;
+    String weightLbs;
+    String weightKg;
+    String association;
 
 }

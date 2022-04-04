@@ -41,8 +41,8 @@ public class FighterDto {
     String heightCm;
     @Schema(name = "Weight, lbs")
     String weightLbs;
-    @Schema(name = "Weight, lbs")
-    String weightCm;
+    @Schema(name = "Weight, kg")
+    String weightKg;
     @Schema(name = "Association")
     String association;
     @Schema(name = "Weight class")
