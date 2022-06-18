@@ -18,33 +18,31 @@ import java.util.List;
 @Document(collection = "mmates_sherdog_fighter")
 public class Fighter {
 
-    @Id
-    String id;
-    String sherdogUrl;
-    String pictureUrl;
-    String name;
-    String nickname;
-    LocalDate birthDate;
-    String addressLocality;
-    String nationality;
-    String heightFt;
-    String heightCm;
-    String weightLbs;
-    String weightKg;
-    String association;
-    String weightClass;
-    Long winsTotals;
-    Long winsKoTko;
-    Long winsSubmissions;
-    Long winsDecisions;
-    Integer winsOther;
-    Long lossesTotals;
-    Long lossesKoTko;
-    Long lossesSubmissions;
-    Long lossesDecisions;
-    Integer lossesOther;
-    Integer draws;
-    Integer nc;
-    List<Fight> fights;
-
+  @Id String id;
+  String sherdogUrl;
+  String pictureUrl;
+  String name;
+  String nickname;
+  LocalDate birthDate;
+  String addressLocality;
+  String nationality;
+  String heightFt;
+  String heightCm;
+  String weightLbs;
+  String weightKg;
+  String association;
+  String weightClass;
+  Long winsTotals;
+  Long winsKoTko;
+  Long winsSubmissions;
+  Long winsDecisions;
+  Integer winsOther;
+  Long lossesTotals;
+  Long lossesKoTko;
+  Long lossesSubmissions;
+  Long lossesDecisions;
+  Integer lossesOther;
+  Integer draws;
+  Integer nc;
+  List<Fight> fights;
 }

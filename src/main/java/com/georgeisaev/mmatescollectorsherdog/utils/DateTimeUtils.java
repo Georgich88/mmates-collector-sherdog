@@ -12,20 +12,18 @@ import java.time.format.DateTimeFormatter;
 @UtilityClass
 public class DateTimeUtils {
 
+  public static LocalDate parseDate(String birthday, DateTimeFormatter formatter) {
+    return LocalDate.parse(birthday, formatter);
+  }
 
-    public static LocalDate parseDate(String birthday, DateTimeFormatter formatter) {
-        return LocalDate.parse(birthday, formatter);
+  public static LocalDate parseDate(String date) {
+    for (var formatter : DateTimeConstants.dateTimeFormatters()) {
+      try {
+        return LocalDate.parse(date, formatter);
+      } catch (Exception e) {
+        log.trace("Cannot parse {} using {}", date, formatter, e);
+      }
     }
-
-    public static LocalDate parseDate(String date) {
-        for (var formatter : DateTimeConstants.dateTimeFormatters()) {
-            try {
-                return LocalDate.parse(date, formatter);
-            } catch (Exception e) {
-                log.trace("Cannot parse {} using {}", date, formatter, e);
-            }
-        }
-        throw new ParserException("Cannot parse date=" + date);
-    }
-
+    throw new ParserException("Cannot parse date=" + date);
+  }
 }

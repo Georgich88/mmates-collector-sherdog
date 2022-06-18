@@ -7,8 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper(imports = {FightMapper.class})
 public interface FighterMapper {
 
-    Fighter toEntity(FighterDto dto);
+  Fighter toEntity(FighterDto dto);
 
-    FighterDto toDto(Fighter dto);
-
+  FighterDto toDto(Fighter dto);
 }

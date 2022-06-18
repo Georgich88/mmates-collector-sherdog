@@ -14,8 +14,7 @@ import lombok.experimental.FieldDefaults;
 @Schema(name = "Promotion details")
 public class PromotionDto {
 
-    String id;
-    String sherdogUrl;
-    String name;
-
+  String id;
+  String sherdogUrl;
+  String name;
 }

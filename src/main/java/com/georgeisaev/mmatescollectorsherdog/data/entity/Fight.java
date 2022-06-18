@@ -17,16 +17,14 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Fight {
 
-    String name;
-    String eventId;
-    String firstFighterId;
-    String secondFighterId;
-    LocalDate date;
-    FightResult result;
-    WinMethod winMethod;
-    Integer winTime;
-    Integer winRound;
-    FightType type;
-
+  String name;
+  String eventId;
+  String firstFighterId;
+  String secondFighterId;
+  LocalDate date;
+  FightResult result;
+  WinMethod winMethod;
+  Integer winTime;
+  Integer winRound;
+  FightType type;
 }
-

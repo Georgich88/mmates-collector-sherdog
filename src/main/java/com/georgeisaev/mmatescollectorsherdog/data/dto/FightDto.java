@@ -19,16 +19,14 @@ import java.time.LocalDate;
 @Schema(name = "Fighter details")
 public class FightDto {
 
-    String name;
-    String eventId;
-    String firstFighterId;
-    String secondFighterId;
-    LocalDate date;
-    FightResult result;
-    WinMethod winMethod;
-    Integer winTime;
-    Integer winRound;
-    FightType type;
-
+  String name;
+  String eventId;
+  String firstFighterId;
+  String secondFighterId;
+  LocalDate date;
+  FightResult result;
+  WinMethod winMethod;
+  Integer winTime;
+  Integer winRound;
+  FightType type;
 }
-

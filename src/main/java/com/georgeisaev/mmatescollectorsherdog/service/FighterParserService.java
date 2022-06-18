@@ -1,5 +1,3 @@
 package com.georgeisaev.mmatescollectorsherdog.service;
 
-public interface FighterParserService {
-
-}
+public interface FighterParserService {}

@@ -15,9 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "mmates_sherdog_promotion")
 public class Promotion {
 
-    @Id
-    String id;
-    String sherdogUrl;
-    String name;
-
+  @Id String id;
+  String sherdogUrl;
+  String name;
 }

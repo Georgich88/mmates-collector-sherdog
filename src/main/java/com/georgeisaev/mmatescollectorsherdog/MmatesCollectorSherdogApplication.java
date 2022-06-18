@@ -10,11 +10,15 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 @EnableConfigurationProperties
 @ConfigurationPropertiesScan
-@OpenAPIDefinition(info = @Info(title = "Mmates, sherdog collector", version = "1.0", description = "Documentation APIs v1.0"))
+@OpenAPIDefinition(
+    info =
+        @Info(
+            title = "Mmates, sherdog collector",
+            version = "1.0",
+            description = "Documentation APIs v1.0"))
 public class MmatesCollectorSherdogApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(MmatesCollectorSherdogApplication.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(MmatesCollectorSherdogApplication.class, args);
+  }
 }

@@ -12,15 +12,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "mmates.sherdog.selector.fighter")
 public class FighterSelectors {
 
-    String name;
-    String nickname;
-    String birthday;
-    String addressLocality;
-    String addressNationality;
-    String heightFeet;
-    String heightCm;
-    String weightLbs;
-    String weightKg;
-    String association;
-
+  String name;
+  String nickname;
+  String birthday;
+  String addressLocality;
+  String addressNationality;
+  String heightFeet;
+  String heightCm;
+  String weightLbs;
+  String weightKg;
+  String association;
 }

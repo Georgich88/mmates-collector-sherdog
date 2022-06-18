@@ -18,16 +18,14 @@ import java.util.List;
 @Document(collection = "mmates_sherdog_event")
 public class Event {
 
-    @Id
-    String id;
-    String sherdogUrl;
-    String name;
-    Promotion promotion;
-    String ownership;
-    LocalDate date;
-    List<Fight> fights;
-    String location;
-    String venue;
-    String enclosure;
-
+  @Id String id;
+  String sherdogUrl;
+  String name;
+  Promotion promotion;
+  String ownership;
+  LocalDate date;
+  List<Fight> fights;
+  String location;
+  String venue;
+  String enclosure;
 }

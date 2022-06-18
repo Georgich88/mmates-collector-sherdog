@@ -17,15 +17,14 @@ import java.util.List;
 @Schema(name = "Event details")
 public class EventDto {
 
-    String id;
-    String sherdogUrl;
-    String name;
-    PromotionDto promotion;
-    String ownership;
-    LocalDate date;
-    List<FightDto> fights;
-    String location;
-    String venue;
-    String enclosure;
-
+  String id;
+  String sherdogUrl;
+  String name;
+  PromotionDto promotion;
+  String ownership;
+  LocalDate date;
+  List<FightDto> fights;
+  String location;
+  String venue;
+  String enclosure;
 }

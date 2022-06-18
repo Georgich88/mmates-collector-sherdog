@@ -25,22 +25,23 @@ import java.text.ParseException;
 @RestController("/fighters")
 public class FighterController {
 
-    FighterService fighterService;
+  FighterService fighterService;
 
-    @PostMapping
-    public Publisher<ResponseEntity<FighterDto>> save(@RequestBody Mono<FighterDto> fighterDto) {
-        return fighterService.save(fighterDto)
-                .map(f -> ResponseEntity.created(URI.create("/fighters/" + f.getId())).body(f));
-    }
+  @PostMapping
+  public Publisher<ResponseEntity<FighterDto>> save(@RequestBody Mono<FighterDto> fighterDto) {
+    return fighterService
+        .save(fighterDto)
+        .map(f -> ResponseEntity.created(URI.create("/fighters/" + f.getId())).body(f));
+  }
 
-    @GetMapping("/{fighterId}")
-    public Publisher<ResponseEntity<FighterDto>> findById(@PathVariable String fighterId) {
-        return fighterService.findById(fighterId).map(ResponseEntity::ok);
-    }
+  @GetMapping("/{fighterId}")
+  public Publisher<ResponseEntity<FighterDto>> findById(@PathVariable String fighterId) {
+    return fighterService.findById(fighterId).map(ResponseEntity::ok);
+  }
 
-    @PostMapping("/parsings")
-    public Publisher<ResponseEntity<FighterDto>> parse(@RequestBody String url) throws IOException, ParseException {
-        return Mono.just(ResponseEntity.ok(fighterService.parse(url)));
-    }
-
+  @PostMapping("/parsings")
+  public Publisher<ResponseEntity<FighterDto>> parse(@RequestBody String url)
+      throws IOException, ParseException {
+    return Mono.just(ResponseEntity.ok(fighterService.parse(url)));
+  }
 }
