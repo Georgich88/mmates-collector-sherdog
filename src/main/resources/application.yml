@@ -1,0 +1,27 @@
+mmates:
+    sherdog:
+        selector:
+            fighter:
+                address-locality: .adr .locality
+                address-nationality: '[itemprop="nationality"]'
+                association: .association-class  span[itemprop="name"]
+                birthday: .fighter-data span[itemprop="birthDate"]
+                height-cm: .fighter-data .bio-holder tr:nth-child(2) td:nth-child(2)
+                height-feet: .fighter-data .bio-holder tr:nth-child(2) td:nth-child(2)
+                    b[itemprop="height"]
+                name: .fighter-info h1[itemprop="name"] .fn
+                nickname: .fighter-info h1[itemprop="name"] .nickname em
+                weight-kg: .fighter-data .bio-holder tr:nth-child(3) td:nth-child(2)
+                weight-lbs: b[itemprop="weight"]
+server:
+    port: 8081
+spring:
+    data:
+        mongodb:
+            uri: mongodb://localhost:27017/mmates_sherdog_collector
+springdoc:
+    api-docs:
+        path: /swagger-doc/v3/api-docs
+    packages-to-scan: com.georgeisaev.mmatescollectorsherdog.controller
+    swagger-ui:
+        path: /swagger-doc/swagger-ui.html
