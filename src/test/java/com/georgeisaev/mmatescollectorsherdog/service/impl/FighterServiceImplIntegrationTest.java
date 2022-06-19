@@ -3,7 +3,6 @@ package com.georgeisaev.mmatescollectorsherdog.service.impl;
 import com.georgeisaev.mmatescollectorsherdog.data.mapper.FighterMapperImpl;
 import com.georgeisaev.mmatescollectorsherdog.data.selector.FighterSelectors;
 import com.georgeisaev.mmatescollectorsherdog.service.FighterService;
-import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ class FighterServiceImplIntegrationTest {
     assertNotNull(fighterService);
 
     // WHEN
-    val khamzatChimaev = assertDoesNotThrow(() -> fighterService.parse(KHAMZAT_CHIMAEV_URL));
+    final var khamzatChimaev = assertDoesNotThrow(() -> fighterService.parse(KHAMZAT_CHIMAEV_URL));
 
     // THEN
     assertNotNull(khamzatChimaev);

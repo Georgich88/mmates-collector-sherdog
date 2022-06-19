@@ -1,10 +1,13 @@
 HELP.md
 target/
 .mvn/wrapper/
+gradle/wrapper/
 !**/src/main/**/target/
 !**/src/test/**/target/
 mvnw
 mvnw.cmd
+.gradle
+gradlew
 
 ### STS ###
 .apt_generated
