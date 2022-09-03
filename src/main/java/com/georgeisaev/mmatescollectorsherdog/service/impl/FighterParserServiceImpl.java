@@ -4,6 +4,7 @@ import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightResult;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightType;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.WinMethod;
 import com.georgeisaev.mmatescollectorsherdog.data.mapper.FighterMapper;
+import com.georgeisaev.mmatescollectorsherdog.data.parser.FighterAttributeParserCommand;
 import com.georgeisaev.mmatescollectorsherdog.data.selector.FighterSelectors;
 import com.georgeisaev.mmatescollectorsherdog.domain.Event;
 import com.georgeisaev.mmatescollectorsherdog.domain.Fight;
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -95,7 +97,7 @@ public class FighterParserServiceImpl implements FighterParserService {
     val builder = Fighter.builder();
     builder.sherdogUrl(url);
     builder.id(defineIdFromSherdogUrl(url));
-    extractAndSetText(doc, selectors::getName, "name", builder::name);
+    parse(doc, builder, FighterAttributeParserCommand.getAvailableCommands());
     extractAndSetText(doc, selectors::getNickname, "nickname", builder::nickname);
     extractAndSetText(
         doc, selectors::getAddressLocality, "addressLocality", builder::addressLocality);
@@ -358,5 +360,10 @@ public class FighterParserServiceImpl implements FighterParserService {
   public void extractAndSetText(
           Document doc, Supplier<String> selector, String propertyName, Consumer<String> setter) {
     extractAndSet(doc, selector.get(), propertyName, setter, elements -> elements.get(0).html());
+  }
+
+  public void parse(Document source, Fighter.FighterBuilder fighterBuilder,
+                    Collection<FighterAttributeParserCommand> commands) {
+    commands.forEach(c-> c.parse(source, fighterBuilder));
   }
 }
