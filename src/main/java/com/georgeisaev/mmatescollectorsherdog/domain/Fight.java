@@ -1,4 +1,4 @@
-package com.georgeisaev.mmatescollectorsherdog.data.dto;
+package com.georgeisaev.mmatescollectorsherdog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightResult;
@@ -12,12 +12,12 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
 @Data
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(name = "Fighter details")
-public class FightDto {
+public class Fight {
 
   String name;
   String eventId;

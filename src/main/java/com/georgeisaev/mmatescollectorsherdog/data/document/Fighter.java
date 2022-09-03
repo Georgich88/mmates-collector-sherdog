@@ -1,4 +1,4 @@
-package com.georgeisaev.mmatescollectorsherdog.data.entity;
+package com.georgeisaev.mmatescollectorsherdog.data.document;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,5 +44,5 @@ public class Fighter {
   Integer lossesOther;
   Integer draws;
   Integer nc;
-  List<Fight> fights;
+  List<FightDoc> fights;
 }

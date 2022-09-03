@@ -1,13 +1,12 @@
 package com.georgeisaev.mmatescollectorsherdog.data.mapper;
 
-import com.georgeisaev.mmatescollectorsherdog.data.dto.FighterDto;
-import com.georgeisaev.mmatescollectorsherdog.data.entity.Fighter;
+import com.georgeisaev.mmatescollectorsherdog.domain.Fighter;
 import org.mapstruct.Mapper;
 
 @Mapper(imports = {FightMapper.class})
 public interface FighterMapper {
 
-  Fighter toEntity(FighterDto dto);
+  com.georgeisaev.mmatescollectorsherdog.data.document.Fighter toEntity(Fighter dto);
 
-  FighterDto toDto(Fighter dto);
+  Fighter toDto(com.georgeisaev.mmatescollectorsherdog.data.document.Fighter dto);
 }

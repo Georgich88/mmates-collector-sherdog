@@ -1,4 +1,4 @@
-package com.georgeisaev.mmatescollectorsherdog.data.entity;
+package com.georgeisaev.mmatescollectorsherdog.data.document;
 
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightResult;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightType;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Fight {
+public class FightDoc {
 
   String name;
   String eventId;

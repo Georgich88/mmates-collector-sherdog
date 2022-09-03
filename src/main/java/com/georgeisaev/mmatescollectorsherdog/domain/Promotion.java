@@ -1,4 +1,4 @@
-package com.georgeisaev.mmatescollectorsherdog.data.dto;
+package com.georgeisaev.mmatescollectorsherdog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,12 +7,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
 @Data
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(name = "Promotion details")
-public class PromotionDto {
+public class Promotion {
 
   String id;
   String sherdogUrl;

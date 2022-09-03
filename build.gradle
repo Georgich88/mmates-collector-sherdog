@@ -10,21 +10,14 @@ plugins {
 group = 'com.georgeisaev'
 version = '0.0.1-SNAPSHOT'
 description = 'mmates-collector-sherdog'
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenLocal()
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
-}
-
-ext {
-    springCloudVersion = '3.1.3'
-    springdocOpenapiWebfluxVersion = '1.5.12'
-    springKafkaVersion = '2.8.5'
-    mapStructVersion = '1.5.1.Final'
-    lombokMapStructBindingVersion = "0.2.0"
+    mavenCentral()
 }
 
 dependencyManagement {
@@ -47,34 +40,34 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     // Kafka
-    implementation 'org.springframework.kafka:spring-kafka:2.8.5'
+    implementation 'org.springframework.kafka:spring-kafka:2.9.0'
 
     // Mapping
-    compileOnly 'org.mapstruct:mapstruct:1.5.1.Final'
+    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
 
     // Swagger
-    implementation "org.springdoc:springdoc-openapi-webflux-ui:${springdocOpenapiWebfluxVersion}"
-    implementation "org.springdoc:springdoc-openapi-webflux-core:${springdocOpenapiWebfluxVersion}"
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.11'
+    implementation 'org.springdoc:springdoc-openapi-webflux-core:1.6.11'
 
-    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'org.jsoup:jsoup:1.15.3'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
 
     // Annotation processors
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.1.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "org.springframework.kafka:spring-kafka-test:${springKafkaVersion}"
-    testImplementation 'io.projectreactor:reactor-test:3.4.18'
+    testImplementation 'org.springframework.kafka:spring-kafka-test:2.9.0'
+    testImplementation 'io.projectreactor:reactor-test:3.4.22'
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
 
     // Annotation test processors
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.1.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 }
 
@@ -87,6 +80,14 @@ publishing {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+    configure(options) {
+        options.encoding = 'UTF-8'
+        options.compilerArgs << '-Amapstruct.defaultComponentModel=spring'
+
+    }
 }

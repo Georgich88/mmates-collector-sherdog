@@ -13,6 +13,8 @@ mmates:
         nickname: .fighter-info h1[itemprop="name"] .nickname em
         weight-kg: .fighter-data .bio-holder tr:nth-child(3) td:nth-child(2)
         weight-lbs: b[itemprop="weight"]
+        wins-totals: .winloses.win span:nth-child(2)
+        losses-totals: .winloses.lose span:nth-child(2)
 server:
   port: 8081
 spring:

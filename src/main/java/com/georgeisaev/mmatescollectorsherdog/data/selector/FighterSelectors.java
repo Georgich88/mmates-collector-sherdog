@@ -22,4 +22,6 @@ public class FighterSelectors {
   String weightLbs;
   String weightKg;
   String association;
+  String winsTotals; // ".winloses.win span:nth-child(2)"
+  String lossesTotals; // ".winloses.win span:nth-child(2)"
 }

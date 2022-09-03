@@ -1,6 +1,7 @@
 package com.georgeisaev.mmatescollectorsherdog.controller;
 
-import com.georgeisaev.mmatescollectorsherdog.data.dto.FighterDto;
+import com.georgeisaev.mmatescollectorsherdog.domain.Fighter;
+import com.georgeisaev.mmatescollectorsherdog.service.FighterParserService;
 import com.georgeisaev.mmatescollectorsherdog.service.FighterService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,22 +27,23 @@ import java.text.ParseException;
 public class FighterController {
 
   FighterService fighterService;
+  FighterParserService fighterParserService;
 
   @PostMapping
-  public Publisher<ResponseEntity<FighterDto>> save(@RequestBody Mono<FighterDto> fighterDto) {
+  public Publisher<ResponseEntity<Fighter>> save(@RequestBody Mono<Fighter> fighterDto) {
     return fighterService
         .save(fighterDto)
         .map(f -> ResponseEntity.created(URI.create("/fighters/" + f.getId())).body(f));
   }
 
   @GetMapping("/{fighterId}")
-  public Publisher<ResponseEntity<FighterDto>> findById(@PathVariable String fighterId) {
+  public Publisher<ResponseEntity<Fighter>> findById(@PathVariable String fighterId) {
     return fighterService.findById(fighterId).map(ResponseEntity::ok);
   }
 
   @PostMapping("/parsings")
-  public Publisher<ResponseEntity<FighterDto>> parse(@RequestBody String url)
+  public Publisher<ResponseEntity<Fighter>> parse(@RequestBody String url)
       throws IOException, ParseException {
-    return Mono.just(ResponseEntity.ok(fighterService.parse(url)));
+    return Mono.just(ResponseEntity.ok(fighterParserService.parse(url)));
   }
 }
