@@ -20,10 +20,10 @@ class FighterParserServiceImplIntegrationTest {
   private static final String KHAMZAT_CHIMAEV_URL =
       "https://www.sherdog.com/fighter/Khamzat-Chimaev-280021";
   private static final String TYRON_WOODLEY_URL =
-          "https://www.sherdog.com/fighter/Tyron-Woodley-42605";
+      "https://www.sherdog.com/fighter/Tyron-Woodley-42605";
 
   private static final String FEDOR_EMELIANENKO_URL =
-          "https://www.sherdog.com/fighter/Fedor-Emelianenko-1500";
+      "https://www.sherdog.com/fighter/Fedor-Emelianenko-1500";
   @Autowired FighterParserService fighterParserService;
 
   @Test
@@ -41,7 +41,6 @@ class FighterParserServiceImplIntegrationTest {
     assertNotNull(khamzatChimaev);
     assertNotNull(khamzatChimaev.getRecord());
     assertThat(khamzatChimaev.getRecord().getWinsTotals()).isPositive();
-
   }
 
   @Test
@@ -53,7 +52,7 @@ class FighterParserServiceImplIntegrationTest {
 
     // WHEN
     final Fighter tyronWoodley =
-            assertDoesNotThrow(() -> fighterParserService.parse(TYRON_WOODLEY_URL));
+        assertDoesNotThrow(() -> fighterParserService.parse(TYRON_WOODLEY_URL));
 
     // THEN
     assertNotNull(tyronWoodley);
@@ -70,12 +69,11 @@ class FighterParserServiceImplIntegrationTest {
 
     // WHEN
     final Fighter fedorEmelianenko =
-            assertDoesNotThrow(() -> fighterParserService.parse(FEDOR_EMELIANENKO_URL));
+        assertDoesNotThrow(() -> fighterParserService.parse(FEDOR_EMELIANENKO_URL));
 
     // THEN
     assertNotNull(fedorEmelianenko);
     assertNotNull(fedorEmelianenko.getRecord());
     assertThat(fedorEmelianenko.getRecord().getNc()).isPositive();
   }
-
 }

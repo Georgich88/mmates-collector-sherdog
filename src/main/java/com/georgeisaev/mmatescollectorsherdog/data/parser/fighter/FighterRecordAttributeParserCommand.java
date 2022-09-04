@@ -25,11 +25,11 @@ import static java.lang.Integer.parseInt;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum FighterRecordAttributeParserCommand
-        implements JsopAttributeParserCommand<FighterRecord.FighterRecordBuilder> {
-  
+    implements JsopAttributeParserCommand<FighterRecord.FighterRecordBuilder> {
+
   // wins
   WINS_TOTAL("winsTotals", ".winloses.win span:nth-child(2)"),
-  WINS("",".fighter-data .winsloses-holder .wins .meter .pl" ) {
+  WINS("", ".fighter-data .winsloses-holder .wins .meter .pl") {
     @Override
     public void parse(final Document source, final FighterRecord.FighterRecordBuilder object) {
       object.winsDetails(parseDetails(source, FighterRecordDetails.builder()).build());
@@ -37,7 +37,7 @@ public enum FighterRecordAttributeParserCommand
   },
   // loses
   LOSES_TOTAL("lossesTotals", ".winloses.lose span:nth-child(2)"),
-  LOSES("",".fighter-data .winsloses-holder .loses .meter .pl" ) {
+  LOSES("", ".fighter-data .winsloses-holder .loses .meter .pl") {
     @Override
     public void parse(final Document source, final FighterRecord.FighterRecordBuilder object) {
       object.lossesDetails(parseDetails(source, FighterRecordDetails.builder()).build());
@@ -48,30 +48,25 @@ public enum FighterRecordAttributeParserCommand
   NC("nc", ".winloses.nc span:nth-child(2)"),
   ;
 
-
-  /**
-  * Attribute name
-  */
+  /** Attribute name */
   String attribute;
 
-  /**
-  * CSS-like element selector, that finds elements matching a query
-  */
+  /** CSS-like element selector, that finds elements matching a query */
   String selector;
 
   public static Collection<FighterRecordAttributeParserCommand> availableCommands() {
     return List.of(values());
   }
 
-  protected FighterRecordDetails.FighterRecordDetailsBuilder
-  parseDetails(
-          @NotNull final Document source,
-          @NotNull final FighterRecordDetails.FighterRecordDetailsBuilder target) {
+  protected FighterRecordDetails.FighterRecordDetailsBuilder parseDetails(
+      @NotNull final Document source,
+      @NotNull final FighterRecordDetails.FighterRecordDetailsBuilder target) {
     final Elements methods = source.select(getSelector());
     extractRecordByMethodProperty(methods, FighterRecordMethods.METHOD_KO, target::koTko);
-    extractRecordByMethodProperty(methods, FighterRecordMethods.METHOD_SUBMISSION, target::submissions);
+    extractRecordByMethodProperty(
+        methods, FighterRecordMethods.METHOD_SUBMISSION, target::submissions);
     extractRecordByMethodProperty(methods, FighterRecordMethods.METHOD_DECISION, target::decisions);
-    try{
+    try {
       extractRecordByMethodProperty(methods, FighterRecordMethods.METHOD_OTHERS, target::other);
     } catch (Exception e) {
       log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, "other", source.baseUri(), e);
@@ -80,8 +75,8 @@ public enum FighterRecordAttributeParserCommand
   }
 
   private static void extractRecordByMethodProperty(
-          @NotNull final Elements methods, final int method, @NotNull final IntConsumer setter) {
-      setter.accept(parseInt(methods.get(method).html().split(" ")[0]));
+      @NotNull final Elements methods, final int method, @NotNull final IntConsumer setter) {
+    setter.accept(parseInt(methods.get(method).html().split(" ")[0]));
   }
 
   @UtilityClass
@@ -91,5 +86,4 @@ public enum FighterRecordAttributeParserCommand
     private static final int METHOD_DECISION = 2;
     private static final int METHOD_OTHERS = 3;
   }
-
 }

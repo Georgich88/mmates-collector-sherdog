@@ -14,18 +14,18 @@ import lombok.experimental.FieldDefaults;
 @Schema(name = "Fighter stats")
 public class FighterRecordDetails {
 
-    @Schema(name = "Totals")
-    Integer totals;
+  @Schema(name = "Totals")
+  Integer totals;
 
-    @Schema(name = "KO/TKO")
-    Integer koTko;
+  @Schema(name = "KO/TKO")
+  Integer koTko;
 
-    @Schema(name = "Submission")
-    Integer submissions;
+  @Schema(name = "Submission")
+  Integer submissions;
 
-    @Schema(name = "Decisions")
-    Integer decisions;
+  @Schema(name = "Decisions")
+  Integer decisions;
 
-    @Schema(name = "Other")
-    Integer other;
+  @Schema(name = "Other")
+  Integer other;
 }

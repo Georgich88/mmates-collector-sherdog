@@ -58,7 +58,6 @@ public class FighterParserServiceImpl implements FighterParserService {
   private static final int COLUMN_ROUND = 4;
   private static final int COLUMN_TIME = 5;
 
-
   @Override
   public Fighter parse(final String url) throws IOException, ParseException, ParserException {
     log.info("Start. Parse Fighter from {}", url);
@@ -68,8 +67,8 @@ public class FighterParserServiceImpl implements FighterParserService {
     builder.id(defineIdFromSherdogUrl(url));
     parse(doc, builder, FighterAttributeParserCommand.availableCommands());
     builder.record(
-            parse(doc, FighterRecord.builder(), FighterRecordAttributeParserCommand.availableCommands())
-                    .build());
+        parse(doc, FighterRecord.builder(), FighterRecordAttributeParserCommand.availableCommands())
+            .build());
 
     try {
       Elements picture = doc.select(".bio_fighter .content img[itemprop=\"image\"]");
@@ -121,7 +120,6 @@ public class FighterParserServiceImpl implements FighterParserService {
     return builder.build();
   }
 
-
   /**
    * Get a fighter fights
    *
@@ -140,13 +138,15 @@ public class FighterParserServiceImpl implements FighterParserService {
             Elements dataCells = tr.select("td");
             Fighter opponent = parseOpponent(dataCells.get(COLUMN_OPPONENT));
 
-            val fightBuilder = Fight.builder()
+            val fightBuilder =
+                Fight.builder()
                     .firstFighterId(fighter.getId())
                     .result(parseFightResult(dataCells.get(COLUMN_RESULT)))
                     .secondFighterId(opponent.getId())
                     .eventId(parseEvent(dataCells.get(COLUMN_EVENT)).getId())
                     .date(parseDate(dataCells.get(COLUMN_EVENT)))
-                    .winMethod(WinMethod.defineWinMethod(parseWinMethod(dataCells.get(COLUMN_METHOD))))
+                    .winMethod(
+                        WinMethod.defineWinMethod(parseWinMethod(dataCells.get(COLUMN_METHOD))))
                     .winRound(parseWinRound(dataCells.get(COLUMN_ROUND)))
                     .winTime(parseWinTime(dataCells.get(COLUMN_TIME)))
                     .name(fighter.getName() + " VS " + opponent.getName());
@@ -265,11 +265,8 @@ public class FighterParserServiceImpl implements FighterParserService {
   // NEW METHODS
 
   public <T, C extends JsopAttributeParserCommand<T>> T parse(
-      Document source,
-      T target,
-      Collection<C> commands) {
+      Document source, T target, Collection<C> commands) {
     commands.forEach(c -> c.parse(source, target));
     return target;
   }
-
 }
