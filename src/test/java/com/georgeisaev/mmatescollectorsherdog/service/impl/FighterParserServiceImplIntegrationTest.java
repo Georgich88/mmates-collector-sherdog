@@ -1,7 +1,6 @@
 package com.georgeisaev.mmatescollectorsherdog.service.impl;
 
 import com.georgeisaev.mmatescollectorsherdog.data.mapper.FighterMapperImpl;
-import com.georgeisaev.mmatescollectorsherdog.data.selector.FighterSelectors;
 import com.georgeisaev.mmatescollectorsherdog.domain.Fighter;
 import com.georgeisaev.mmatescollectorsherdog.service.FighterParserService;
 import org.junit.jupiter.api.DisplayName;
@@ -10,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataMongoTest
-@Import({FighterParserServiceImpl.class, FighterMapperImpl.class, FighterSelectors.class})
+@Import({FighterParserServiceImpl.class, FighterMapperImpl.class})
 class FighterParserServiceImplIntegrationTest {
 
   private static final String KHAMZAT_CHIMAEV_URL =

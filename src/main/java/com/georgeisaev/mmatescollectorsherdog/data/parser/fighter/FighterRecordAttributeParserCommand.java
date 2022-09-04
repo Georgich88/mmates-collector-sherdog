@@ -3,7 +3,6 @@ package com.georgeisaev.mmatescollectorsherdog.data.parser.fighter;
 import com.georgeisaev.mmatescollectorsherdog.data.parser.JsopAttributeParserCommand;
 import com.georgeisaev.mmatescollectorsherdog.domain.FighterRecord;
 import com.georgeisaev.mmatescollectorsherdog.domain.FighterRecordDetails;
-import jakarta.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.IntConsumer;
@@ -65,8 +65,8 @@ public enum FighterRecordAttributeParserCommand
 
   protected FighterRecordDetails.FighterRecordDetailsBuilder
   parseDetails(
-          @Nonnull final Document source,
-          @Nonnull final FighterRecordDetails.FighterRecordDetailsBuilder target) {
+          @NotNull final Document source,
+          @NotNull final FighterRecordDetails.FighterRecordDetailsBuilder target) {
     final Elements methods = source.select(getSelector());
     extractRecordByMethodProperty(methods, FighterRecordMethods.METHOD_KO, target::koTko);
     extractRecordByMethodProperty(methods, FighterRecordMethods.METHOD_SUBMISSION, target::submissions);
@@ -80,7 +80,7 @@ public enum FighterRecordAttributeParserCommand
   }
 
   private static void extractRecordByMethodProperty(
-          @Nonnull final Elements methods, final int method, @Nonnull final IntConsumer setter) {
+          @NotNull final Elements methods, final int method, @NotNull final IntConsumer setter) {
       setter.accept(parseInt(methods.get(method).html().split(" ")[0]));
   }
 

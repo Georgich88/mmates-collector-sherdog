@@ -1,10 +1,9 @@
 package com.georgeisaev.mmatescollectorsherdog.data.parser;
 
-import com.georgeisaev.mmatescollectorsherdog.domain.Fighter;
 import com.georgeisaev.mmatescollectorsherdog.utils.DateTimeUtils;
-import jakarta.annotation.Nonnull;
 import org.jsoup.nodes.Document;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.function.Function;
@@ -37,10 +36,10 @@ public interface JsopAttributeParserCommand<T> extends AttributeParserCommand<T,
    * @param <A> attribute type
    */
   default  <A> void parseAttribute(
-          @Nonnull final Document source,
-          @Nonnull final T object,
-          @Nonnull final Class<A> attributeType,
-          @Nonnull final Function<String, A> valueConverter) {
+          @NotNull final Document source,
+          @NotNull final T object,
+          @NotNull final Class<A> attributeType,
+          @NotNull final Function<String, A> valueConverter) {
     final Method setter = findMethod(object.getClass(), getAttribute(), attributeType);
     if (setter == null) return;
     extractAndSet(

@@ -3,7 +3,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     id 'java'
     id 'maven-publish'
-    id "org.springframework.boot" version "2.7.3"
+    id "org.springframework.boot" version "2.7.0"
     id "io.spring.dependency-management" version "1.0.10.RELEASE"
 }
 
@@ -14,10 +14,9 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenLocal()
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
     mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
 }
 
 dependencyManagement {
@@ -51,9 +50,6 @@ dependencies {
 
     // Parsing
     implementation 'org.jsoup:jsoup:1.15.3'
-
-    // Annotation
-    implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
