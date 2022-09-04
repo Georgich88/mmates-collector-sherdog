@@ -12,7 +12,6 @@ import com.georgeisaev.mmatescollectorsherdog.domain.Fighter;
 import com.georgeisaev.mmatescollectorsherdog.exception.ParserException;
 import com.georgeisaev.mmatescollectorsherdog.repository.FighterRepository;
 import com.georgeisaev.mmatescollectorsherdog.service.FighterParserService;
-import com.georgeisaev.mmatescollectorsherdog.service.FighterService;
 import com.georgeisaev.mmatescollectorsherdog.utils.DateTimeUtils;
 import com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils;
 import lombok.AccessLevel;
@@ -25,7 +24,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -89,7 +87,6 @@ public class FighterParserServiceImpl implements FighterParserService {
   // Properties
   FighterSelectors selectors;
 
-
   @Override
   public Fighter parse(final String url) throws IOException, ParseException, ParserException {
     log.info("Start. Parse Fighter from {}", url);
@@ -121,8 +118,7 @@ public class FighterParserServiceImpl implements FighterParserService {
         url, winsMethods, METHOD_DECISION, "winsDecisions", builder::winsDecisions);
     extractRecordByMethodProperty(url, winsMethods, METHOD_OTHERS, "winsOther", builder::winsOther);
     // loses
-    extractIntProperty(
-        url, doc, selectors::getLossesTotals, "lossesTotals", builder::lossesTotals);
+    extractIntProperty(url, doc, selectors::getLossesTotals, "lossesTotals", builder::lossesTotals);
     Elements lossesMethods = doc.select(SELECTOR_FIGHTER_LOSSES_METHODS_ELEMENT);
     extractRecordByMethodProperty(
         url, lossesMethods, METHOD_KO, "lossesKoTko", builder::lossesKoTko);
@@ -354,12 +350,14 @@ public class FighterParserServiceImpl implements FighterParserService {
   // NEW METHODS
 
   public void extractAndSetText(
-          Document doc, Supplier<String> selector, String propertyName, Consumer<String> setter) {
+      Document doc, Supplier<String> selector, String propertyName, Consumer<String> setter) {
     extractAndSet(doc, selector.get(), propertyName, setter, elements -> elements.get(0).html());
   }
 
-  public void parse(Document source, Fighter.FighterBuilder fighterBuilder,
-                    Collection<FighterAttributeParserCommand> commands) {
-    commands.forEach(c-> c.parse(source, fighterBuilder));
+  public void parse(
+      Document source,
+      Fighter.FighterBuilder fighterBuilder,
+      Collection<FighterAttributeParserCommand> commands) {
+    commands.forEach(c -> c.parse(source, fighterBuilder));
   }
 }

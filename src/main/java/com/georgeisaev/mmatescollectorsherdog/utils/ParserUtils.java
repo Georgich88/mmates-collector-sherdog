@@ -33,7 +33,8 @@ public class ParserUtils {
     return Jsoup.connect(url)
         .timeout(PARSING_TIMEOUT)
         .userAgent(
-            "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+            "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725"
+                + " Firefox/2.0.0.6")
         .referrer("https://www.google.com")
         .get();
   }
