@@ -98,10 +98,6 @@ public class FighterParserServiceImpl implements FighterParserService {
     builder.sherdogUrl(url);
     builder.id(defineIdFromSherdogUrl(url));
     parse(doc, builder, FighterAttributeParserCommand.getAvailableCommands());
-    extractAndSetText(doc, selectors::getNickname, "nickname", builder::nickname);
-    extractAndSetText(
-        doc, selectors::getAddressLocality, "addressLocality", builder::addressLocality);
-    extractAndSetText(doc, selectors::getAddressNationality, "nationality", builder::nationality);
     // Birthday
     try {
       Elements birthday = doc.select(selectors.getBirthday());
