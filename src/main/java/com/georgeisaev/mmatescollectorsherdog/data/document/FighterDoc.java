@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Document(collection = "mmates_sherdog_fighter")
-public class Fighter {
+public class FighterDoc {
 
   @Id String id;
   String sherdogUrl;

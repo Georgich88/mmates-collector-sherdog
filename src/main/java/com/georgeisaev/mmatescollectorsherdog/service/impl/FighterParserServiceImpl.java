@@ -55,9 +55,6 @@ import static java.util.Comparator.nullsFirst;
 @Slf4j
 public class FighterParserServiceImpl implements FighterParserService {
 
-  // Selectors
-  private static final String DRAWS_ELEMENT = "Draws";
-  private static final String NC_ELEMENT = "N/C";
   private static final DateTimeFormatter DATE_TIME_FORMATTER_MMM_DD_YYYY =
       DateTimeFormatter.ofPattern("MMM / dd / " + "yyyy", Locale.US);
   // Re
@@ -67,12 +64,7 @@ public class FighterParserServiceImpl implements FighterParserService {
   private static final int COLUMN_METHOD = 3;
   private static final int COLUMN_ROUND = 4;
   private static final int COLUMN_TIME = 5;
-  // Repositories
-  FighterRepository fighterRepository;
-  // Mappers
-  FighterMapper fighterMapper;
-  // Properties
-  FighterSelectors selectors;
+
 
   @Override
   public Fighter parse(final String url) throws IOException, ParseException, ParserException {
