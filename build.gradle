@@ -3,7 +3,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     id 'java'
     id 'maven-publish'
-    id "org.springframework.boot" version "2.7.0"
+    id "org.springframework.boot" version "2.7.3"
     id "io.spring.dependency-management" version "1.0.10.RELEASE"
 }
 
@@ -49,7 +49,11 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.11'
     implementation 'org.springdoc:springdoc-openapi-webflux-core:1.6.11'
 
+    // Parsing
     implementation 'org.jsoup:jsoup:1.15.3'
+
+    // Annotation
+    implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
