@@ -17,34 +17,33 @@ import static com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils.extractAn
 @Getter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum FighterAttributeParserCommand implements AttributeParserCommand<Fighter.FighterBuilder, Document> {
+public enum FighterAttributeParserCommand
+    implements AttributeParserCommand<Fighter.FighterBuilder, Document> {
+  NAME("name", ".fighter-info h1[itemprop=\"name\"] .fn"),
 
-    NAME("name", ".fighter-info h1[itemprop=\"name\"] .fn"),
+  NICKNAME("nickname", ".fighter-info h1[itemprop=\"name\"] .nickname em"),
 
+  ADDRESS_LOCALITY("addressLocality", ".adr .locality"),
 
-    NICKNAME("nickname", ".fighter-info h1[itemprop=\"name\"] .nickname em"),
+  NATIONALITY("addressLocality", "[itemprop=\"nationality\"]");
 
-    ADDRESS_LOCALITY("addressLocality", ".adr .locality"),
+  String attribute;
+  String selector;
 
-    NATIONALITY("addressLocality", "[itemprop=\"nationality\"]");
+  public static Collection<FighterAttributeParserCommand> getAvailableCommands() {
+    return List.of(values());
+  }
 
-
-    String attribute;
-    String selector;
-
-    public static Collection<FighterAttributeParserCommand> getAvailableCommands() {
-        return List.of(values());
-    }
-
-    @Override
-    public void parse(final Document source, final Fighter.FighterBuilder object) {
-        final Method setter = ReflectionUtils.findMethod(Fighter.FighterBuilder.class, attribute, String.class);
-        if (setter == null) return;
-        extractAndSet(source,
-                getSelector(),
-                getAttribute(),
-                s-> ReflectionUtils.invokeMethod(setter, object, s),
-                elements -> elements.get(0).html());
-    }
-
+  @Override
+  public void parse(final Document source, final Fighter.FighterBuilder object) {
+    final Method setter =
+        ReflectionUtils.findMethod(Fighter.FighterBuilder.class, attribute, String.class);
+    if (setter == null) return;
+    extractAndSet(
+        source,
+        getSelector(),
+        getAttribute(),
+        s -> ReflectionUtils.invokeMethod(setter, object, s),
+        elements -> elements.get(0).html());
+  }
 }
