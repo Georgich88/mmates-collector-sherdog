@@ -144,19 +144,20 @@ public class FighterParserServiceImpl implements FighterParserService {
       tableRows.remove(0);
       tableRows.forEach(
           tr -> {
-            val fightBuilder = Fight.builder();
-            fightBuilder.firstFighterId(fighter.getId());
             Elements dataCells = tr.select("td");
-            fightBuilder.result(parseFightResult(dataCells.get(COLUMN_RESULT)));
             Fighter opponent = parseOpponent(dataCells.get(COLUMN_OPPONENT));
-            fightBuilder.secondFighterId(opponent.getId());
-            fightBuilder.eventId(parseEvent(dataCells.get(COLUMN_EVENT)).getId());
-            fightBuilder.date(parseDate(dataCells.get(COLUMN_EVENT)));
-            fightBuilder.winMethod(
-                WinMethod.defineWinMethod(parseWinMethod(dataCells.get(COLUMN_METHOD))));
-            fightBuilder.winRound(parseWinRound(dataCells.get(COLUMN_ROUND)));
-            fightBuilder.winTime(parseWinTime(dataCells.get(COLUMN_TIME)));
-            fightBuilder.name(fighter.getName() + " VS " + opponent.getName());
+
+            val fightBuilder = Fight.builder()
+                    .firstFighterId(fighter.getId())
+                    .result(parseFightResult(dataCells.get(COLUMN_RESULT)))
+                    .secondFighterId(opponent.getId())
+                    .eventId(parseEvent(dataCells.get(COLUMN_EVENT)).getId())
+                    .date(parseDate(dataCells.get(COLUMN_EVENT)))
+                    .winMethod(WinMethod.defineWinMethod(parseWinMethod(dataCells.get(COLUMN_METHOD))))
+                    .winRound(parseWinRound(dataCells.get(COLUMN_ROUND)))
+                    .winTime(parseWinTime(dataCells.get(COLUMN_TIME)))
+                    .name(fighter.getName() + " VS " + opponent.getName());
+
             fights.add(fightBuilder.build());
             log.info("{}", fightBuilder);
           });
