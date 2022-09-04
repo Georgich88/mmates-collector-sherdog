@@ -4,15 +4,17 @@ import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightResult;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.FightType;
 import com.georgeisaev.mmatescollectorsherdog.data.enumerators.WinMethod;
 import com.georgeisaev.mmatescollectorsherdog.data.mapper.FighterMapper;
-import com.georgeisaev.mmatescollectorsherdog.data.parser.FighterAttributeParserCommand;
+import com.georgeisaev.mmatescollectorsherdog.data.parser.fighter.FighterAttributeParserCommand;
+import com.georgeisaev.mmatescollectorsherdog.data.parser.fighter.FighterRecordAttributeParserCommand;
+import com.georgeisaev.mmatescollectorsherdog.data.parser.JsopAttributeParserCommand;
 import com.georgeisaev.mmatescollectorsherdog.data.selector.FighterSelectors;
 import com.georgeisaev.mmatescollectorsherdog.domain.Event;
 import com.georgeisaev.mmatescollectorsherdog.domain.Fight;
 import com.georgeisaev.mmatescollectorsherdog.domain.Fighter;
+import com.georgeisaev.mmatescollectorsherdog.domain.FighterRecord;
 import com.georgeisaev.mmatescollectorsherdog.exception.ParserException;
 import com.georgeisaev.mmatescollectorsherdog.repository.FighterRepository;
 import com.georgeisaev.mmatescollectorsherdog.service.FighterParserService;
-import com.georgeisaev.mmatescollectorsherdog.utils.DateTimeUtils;
 import com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -55,24 +56,10 @@ import static java.util.Comparator.nullsFirst;
 public class FighterParserServiceImpl implements FighterParserService {
 
   // Selectors
-  public static final String SELECTOR_FIGHTER_WEIGHT_LBS_ELEMENT = ".size_info .weight strong";
-  public static final String SELECTOR_FIGHTER_WINS_ELEMENT = ".winloses.win span:nth-child(2)";
-  public static final String SELECTOR_FIGHTER_WINS_METHODS_ELEMENTS =
-      ".fighter-data .winsloses-holder .wins .meter .pl";
-  public static final String SELECTOR_FIGHTER_LOSSES_ELEMENTS = ".bio_graph.loser .counter";
-  public static final String SELECTOR_FIGHTER_LOSSES_METHODS_ELEMENT =
-      ".fighter-data .winsloses-holder .loses .meter .pl";
   private static final String DRAWS_ELEMENT = "Draws";
   private static final String NC_ELEMENT = "N/C";
   private static final DateTimeFormatter DATE_TIME_FORMATTER_MMM_DD_YYYY =
       DateTimeFormatter.ofPattern("MMM / dd / " + "yyyy", Locale.US);
-  private static final DateTimeFormatter DATE_FORMAT_YYYY_MM_DD =
-      DateTimeFormatter.ofPattern("MMM dd, yyyy");
-  // Fighter record
-  private static final int METHOD_KO = 0;
-  private static final int METHOD_SUBMISSION = 1;
-  private static final int METHOD_DECISION = 2;
-  private static final int METHOD_OTHERS = 3;
   // Re
   private static final int COLUMN_RESULT = 0;
   private static final int COLUMN_OPPONENT = 1;
@@ -94,51 +81,11 @@ public class FighterParserServiceImpl implements FighterParserService {
     val builder = Fighter.builder();
     builder.sherdogUrl(url);
     builder.id(defineIdFromSherdogUrl(url));
-    parse(doc, builder, FighterAttributeParserCommand.getAvailableCommands());
-    // Birthday
-    try {
-      Elements birthday = doc.select(selectors.getBirthday());
-      builder.birthDate(DateTimeUtils.parseDate(birthday.get(0).html()));
-    } catch (Exception e) {
-      log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, "birthDate", url, e);
-    }
-    // height
-    extractAndSetText(doc, selectors::getHeightFeet, "heightFt", builder::heightFt);
-    extractAndSetText(doc, selectors::getHeightCm, "heightCm", builder::heightCm);
-    // weight
-    extractAndSetText(doc, selectors::getWeightLbs, "weightLbs", builder::weightLbs);
-    extractAndSetText(doc, selectors::getWeightKg, "weightKg", builder::weightKg);
-    // wins
-    extractIntProperty(url, doc, selectors::getWinsTotals, "winsTotals", builder::winsTotals);
-    Elements winsMethods = doc.select(SELECTOR_FIGHTER_WINS_METHODS_ELEMENTS);
-    extractRecordByMethodProperty(url, winsMethods, METHOD_KO, "winsKoTko", builder::winsKoTko);
-    extractRecordByMethodProperty(
-        url, winsMethods, METHOD_SUBMISSION, "winsSubmissions", builder::winsSubmissions);
-    extractRecordByMethodProperty(
-        url, winsMethods, METHOD_DECISION, "winsDecisions", builder::winsDecisions);
-    extractRecordByMethodProperty(url, winsMethods, METHOD_OTHERS, "winsOther", builder::winsOther);
-    // loses
-    extractIntProperty(url, doc, selectors::getLossesTotals, "lossesTotals", builder::lossesTotals);
-    Elements lossesMethods = doc.select(SELECTOR_FIGHTER_LOSSES_METHODS_ELEMENT);
-    extractRecordByMethodProperty(
-        url, lossesMethods, METHOD_KO, "lossesKoTko", builder::lossesKoTko);
-    extractRecordByMethodProperty(
-        url, lossesMethods, METHOD_SUBMISSION, "lossesSubmissions", builder::lossesSubmissions);
-    extractRecordByMethodProperty(
-        url, lossesMethods, METHOD_DECISION, "lossesDecisions", builder::lossesDecisions);
-    extractRecordByMethodProperty(
-        url, lossesMethods, METHOD_OTHERS, "lossesOther", builder::lossesOther);
+    parse(doc, builder, FighterAttributeParserCommand.availableCommands());
+    builder.record(
+            parse(doc, FighterRecord.builder(), FighterRecordAttributeParserCommand.availableCommands())
+                    .build());
 
-    // draws and NC
-    Elements drawsNc = doc.select(".right_side .bio_graph .card");
-    for (Element element : drawsNc) {
-      String html = element.select("span.result").html();
-      if (DRAWS_ELEMENT.equals(html)) {
-        builder.draws(parseInt(element.select("span.counter").html()));
-      } else if (NC_ELEMENT.equals(html)) {
-        builder.nc(parseInt(element.select("span.counter").html()));
-      }
-    }
     try {
       Elements picture = doc.select(".bio_fighter .content img[itemprop=\"image\"]");
       String pictureUrl = BASE_HTTPS_URL + picture.attr("src").trim();
@@ -189,24 +136,6 @@ public class FighterParserServiceImpl implements FighterParserService {
     return builder.build();
   }
 
-  private void extractRecordByMethodProperty(
-      String url, Elements methods, int method, String property, IntConsumer setter) {
-    try {
-      setter.accept(parseInt(methods.get(method).html().split(" ")[0]));
-    } catch (Exception e) {
-      log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, property, url, e);
-    }
-  }
-
-  private void extractIntProperty(
-      String url, Document doc, Supplier<String> selector, String property, IntConsumer setter) {
-    try {
-      Elements name = doc.select(selector.get());
-      setter.accept(parseInt(name.get(0).html()));
-    } catch (Exception e) {
-      log.error(MSG_ERR_CANNOT_PARSE_PROPERTY, property, url, e);
-    }
-  }
 
   /**
    * Get a fighter fights
@@ -349,15 +278,12 @@ public class FighterParserServiceImpl implements FighterParserService {
 
   // NEW METHODS
 
-  public void extractAndSetText(
-      Document doc, Supplier<String> selector, String propertyName, Consumer<String> setter) {
-    extractAndSet(doc, selector.get(), propertyName, setter, elements -> elements.get(0).html());
+  public <T, C extends JsopAttributeParserCommand<T>> T parse(
+      Document source,
+      T target,
+      Collection<C> commands) {
+    commands.forEach(c -> c.parse(source, target));
+    return target;
   }
 
-  public void parse(
-      Document source,
-      Fighter.FighterBuilder fighterBuilder,
-      Collection<FighterAttributeParserCommand> commands) {
-    commands.forEach(c -> c.parse(source, fighterBuilder));
-  }
 }

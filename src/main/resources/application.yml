@@ -3,12 +3,6 @@ mmates:
     selector:
       fighter:
         association: .association-class  span[itemprop="name"]
-        birthday: .fighter-data span[itemprop="birthDate"]
-        height-cm: .fighter-data .bio-holder tr:nth-child(2) td:nth-child(2)
-        height-feet: .fighter-data .bio-holder tr:nth-child(2) td:nth-child(2)
-          b[itemprop="height"]
-        weight-kg: .fighter-data .bio-holder tr:nth-child(3) td:nth-child(2)
-        weight-lbs: b[itemprop="weight"]
         wins-totals: .winloses.win span:nth-child(2)
         losses-totals: .winloses.lose span:nth-child(2)
 server:

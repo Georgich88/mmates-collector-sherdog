@@ -59,41 +59,8 @@ public class Fighter {
   @Schema(name = "Weight class")
   String weightClass;
 
-  @Schema(name = "Wins")
-  Integer winsTotals;
-
-  @Schema(name = "Wins, KO/TKO")
-  Integer winsKoTko;
-
-  @Schema(name = "Wins, submission")
-  Integer winsSubmissions;
-
-  @Schema(name = "Wins, decisions")
-  Integer winsDecisions;
-
-  @Schema(name = "Wins, other")
-  Integer winsOther;
-
-  @Schema(name = "Losses")
-  Integer lossesTotals;
-
-  @Schema(name = "Losses, KO/TKO")
-  Integer lossesKoTko;
-
-  @Schema(name = "Losses, submission")
-  Integer lossesSubmissions;
-
-  @Schema(name = "Losses, decisions")
-  Integer lossesDecisions;
-
-  @Schema(name = "Losses, other")
-  Integer lossesOther;
-
-  @Schema(name = "Draws")
-  Integer draws;
-
-  @Schema(name = "No contest")
-  Integer nc;
+  @Schema(name = "Record")
+  FighterRecord record;
 
   @Schema(name = "Fights")
   List<Fight> fights;
