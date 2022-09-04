@@ -13,8 +13,8 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 17
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+      - name: Build with Gradle
+        run: gradle build
 
   format:
     name: Format
