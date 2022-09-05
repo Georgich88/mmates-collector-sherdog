@@ -54,8 +54,7 @@ public enum FighterRecordAttributeParserCommand
   /** CSS-like element selector, that finds elements matching a query */
   String selector;
 
-  public static Collection<JsopAttributeParserCommand<FighterRecord.FighterRecordBuilder>>
-  availableCommands() {
+  public static Collection<FighterRecordAttributeParserCommand> availableCommands() {
     return List.of(values());
   }
 

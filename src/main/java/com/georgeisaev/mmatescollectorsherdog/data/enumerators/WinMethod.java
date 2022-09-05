@@ -17,15 +17,22 @@ public enum WinMethod {
       throw new NoSuchElementException("Cannot define win method from " + methodAndDetails);
     }
     final String methodUpperCase = methodDetails[0].toUpperCase().trim();
-    return switch (methodUpperCase) {
-      case "KO", "KNOCKOUT", "K.O." -> KO;
-      case "TKO", "TECHNICAL KNOCKOUT", "T.K.O." -> TKO;
-      case "DECISION", "DEC" -> DECISION;
-      case "SUBMISSION", "SUB" -> SUBMISSION;
-      case "TECHNICAL SUBMISSION" -> TECHNICAL_SUBMISSION;
-      case "NO CONTEST", "NC", "N/C" -> NC;
-      default -> OTHER;
-    };
+    switch (methodUpperCase) {
+      case "KO", "KNOCKOUT", "K.O.":
+        return KO;
+      case "TKO", "TECHNICAL KNOCKOUT", "T.K.O.":
+        return TKO;
+      case "DECISION", "DEC":
+        return DECISION;
+      case "SUBMISSION", "SUB":
+        return SUBMISSION;
+      case "TECHNICAL SUBMISSION":
+        return TECHNICAL_SUBMISSION;
+      case "NO CONTEST", "NC", "N/C":
+        return NC;
+      default:
+        return OTHER;
+    }
   }
 
   public static String winMethodDetails(final String methodAndDetails) {
