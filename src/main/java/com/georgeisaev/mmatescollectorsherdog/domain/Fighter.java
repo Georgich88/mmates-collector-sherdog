@@ -64,4 +64,12 @@ public class Fighter {
 
   @Schema(name = "Fights")
   List<Fight> fights;
+
+  public Fighter postConstruct() {
+    if (fights != null) {
+      fights.forEach(f -> f.setFirstFighterId(id));
+    }
+    return this;
+  }
+
 }

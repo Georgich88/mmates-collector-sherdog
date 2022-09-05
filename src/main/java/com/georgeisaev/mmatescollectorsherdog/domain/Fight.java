@@ -16,16 +16,16 @@ import java.time.LocalDate;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Schema(name = "Fighter details")
+@Schema(name = "Fight details")
 public class Fight {
 
-  String name;
   String eventId;
   String firstFighterId;
   String secondFighterId;
   LocalDate date;
   FightResult result;
   WinMethod winMethod;
+  String winMethodDetails;
   Integer winTime;
   Integer winRound;
   FightType type;

@@ -9,17 +9,12 @@ public enum FightType {
   UPCOMING;
 
   public static FightType fromString(String type) {
-    switch (type.toUpperCase().trim()) {
-      case "PRO":
-        return PRO;
-      case "PRO EXHIBITION":
-        return PRO_EXHIBITION;
-      case "AMATEUR":
-        return AMATEUR;
-      case "EXHIBITION":
-        return EXHIBITION;
-      default:
-        return OTHER;
-    }
+    return switch (type.toUpperCase().trim()) {
+      case "PRO" -> PRO;
+      case "PRO EXHIBITION" -> PRO_EXHIBITION;
+      case "AMATEUR" -> AMATEUR;
+      case "EXHIBITION" -> EXHIBITION;
+      default -> OTHER;
+    };
   }
 }

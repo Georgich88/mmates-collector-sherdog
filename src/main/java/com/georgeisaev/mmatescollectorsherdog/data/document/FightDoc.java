@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FightDoc {
 
-  String name;
   String eventId;
   String firstFighterId;
   String secondFighterId;
