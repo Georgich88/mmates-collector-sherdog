@@ -18,17 +18,25 @@ public enum WinMethod {
     }
     final String methodUpperCase = methodDetails[0].toUpperCase().trim();
     switch (methodUpperCase) {
-      case "KO", "KNOCKOUT", "K.O.":
+      case "KO":
+      case "KNOCKOUT":
+      case "K.O.":
         return KO;
-      case "TKO", "TECHNICAL KNOCKOUT", "T.K.O.":
+      case "TKO":
+      case "TECHNICAL KNOCKOUT":
+      case "T.K.O.":
         return TKO;
-      case "DECISION", "DEC":
+      case "DECISION":
+      case "DEC":
         return DECISION;
-      case "SUBMISSION", "SUB":
+      case "SUBMISSION":
+      case "SUB":
         return SUBMISSION;
       case "TECHNICAL SUBMISSION":
         return TECHNICAL_SUBMISSION;
-      case "NO CONTEST", "NC", "N/C":
+      case "NO CONTEST":
+      case "NC":
+      case "N/C":
         return NC;
       default:
         return OTHER;
