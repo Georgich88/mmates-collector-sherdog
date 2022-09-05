@@ -7,10 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static com.georgeisaev.mmatescollectorsherdog.config.DateTimeConstants.DATE_TIME_FORMATTER_MM_SS;
 
 @Slf4j
 @UtilityClass
@@ -38,5 +36,4 @@ public class DateTimeUtils {
     }
     throw new ParserException("Cannot parse minutesSeconds=" + minutesSeconds);
   }
-
 }

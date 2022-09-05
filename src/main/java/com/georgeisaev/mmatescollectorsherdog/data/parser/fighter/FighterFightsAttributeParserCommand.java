@@ -15,20 +15,15 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,7 +38,6 @@ import static com.georgeisaev.mmatescollectorsherdog.utils.ParserUtils.defineIdF
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsFirst;
-import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
 @Getter
@@ -53,54 +47,61 @@ public enum FighterFightsAttributeParserCommand
     implements JsopAttributeParserCommand<Fighter.FighterBuilder> {
 
   // fights history - pro
-  FIGHTS("fights", ".tiled_bg.latest_features .slanted_title"){
+  FIGHTS("fights", ".tiled_bg.latest_features .slanted_title") {
     @Override
     public void parse(Document doc, Fighter.FighterBuilder builder) {
 
       final Elements tableTitles = doc.select(getSelector());
-      final Collection<Element> foundTitles = tableTitles.stream()
+      final Collection<Element> foundTitles =
+          tableTitles.stream()
               .filter(element -> element.text().startsWith(FIGHT_HISTORY_TABLE_TITLE_PREFIX))
               .toList();
 
       final List<Fight> fights = new ArrayList<>();
 
       foundTitles.stream()
-              .filter(title-> title.parent() != null && title.parent().parent() != null)
-              .forEach(title -> {
+          .filter(title -> title.parent() != null && title.parent().parent() != null)
+          .forEach(
+              title -> {
                 final FightType fightType =
-                    FightType.fromString(title.text().replace(FIGHT_HISTORY_TABLE_TITLE_PREFIX, ""));
-                title.parent().parent()
+                    FightType.fromString(
+                        title.text().replace(FIGHT_HISTORY_TABLE_TITLE_PREFIX, ""));
+                title
+                    .parent()
+                    .parent()
                     .select(".module.fight_history .new_table_holder table tr")
-                    .stream().skip(1) // skip table head
-                    .forEach(tableRow -> {
-                      final Elements dataCells = tableRow.select("td");
-                      final Fighter opponent = parseOpponent(dataCells.get(COLUMN_OPPONENT));
-                      final String methodAndDetails = parseWinMethod(dataCells.get(COLUMN_METHOD));
-                      final Fight fight = Fight.builder()
-                          .result(parseFightResult(dataCells.get(COLUMN_RESULT)))
-                          .secondFighterId(opponent.getId())
-                          .eventId(parseEvent(dataCells.get(COLUMN_EVENT)).getId())
-                          .date(parseDate(dataCells.get(COLUMN_EVENT)))
-                          .winMethod(WinMethod.winMethod(methodAndDetails))
-                          .winMethodDetails(WinMethod.winMethodDetails(methodAndDetails))
-                          .winRound(parseWinRound(dataCells.get(COLUMN_ROUND)))
-                          .winTime(parseWinTime(dataCells.get(COLUMN_TIME)))
-                          .type(fightType)
-                          .build();
-                      fights.add(fight);
-                    });
-      });
+                    .stream()
+                    .skip(1) // skip table head
+                    .forEach(
+                        tableRow -> {
+                          final Elements dataCells = tableRow.select("td");
+                          final Fighter opponent = parseOpponent(dataCells.get(COLUMN_OPPONENT));
+                          final String methodAndDetails =
+                              parseWinMethod(dataCells.get(COLUMN_METHOD));
+                          final Fight fight =
+                              Fight.builder()
+                                  .result(parseFightResult(dataCells.get(COLUMN_RESULT)))
+                                  .secondFighterId(opponent.getId())
+                                  .eventId(parseEvent(dataCells.get(COLUMN_EVENT)).getId())
+                                  .date(parseDate(dataCells.get(COLUMN_EVENT)))
+                                  .winMethod(WinMethod.winMethod(methodAndDetails))
+                                  .winMethodDetails(WinMethod.winMethodDetails(methodAndDetails))
+                                  .winRound(parseWinRound(dataCells.get(COLUMN_ROUND)))
+                                  .winTime(parseWinTime(dataCells.get(COLUMN_TIME)))
+                                  .type(fightType)
+                                  .build();
+                          fights.add(fight);
+                        });
+              });
 
-      builder.fights(fights.stream()
-          .sorted(comparing(Fight::getDate, nullsFirst(naturalOrder())))
-          .toList());
-
+      builder.fights(
+          fights.stream().sorted(comparing(Fight::getDate, nullsFirst(naturalOrder()))).toList());
     }
   };
 
   public static final String FIGHT_HISTORY_TABLE_TITLE_PREFIX = "FIGHT HISTORY - ";
   private static final DateTimeFormatter DATE_TIME_FORMATTER_MMM_DD_YYYY =
-          DateTimeFormatter.ofPattern("MMM / dd / " + "yyyy", Locale.US);
+      DateTimeFormatter.ofPattern("MMM / dd / " + "yyyy", Locale.US);
 
   /** Attribute name */
   String attribute;
@@ -214,12 +215,11 @@ public enum FighterFightsAttributeParserCommand
 
   @UtilityClass
   static final class FightTableColumns {
-     static final int COLUMN_RESULT = 0;
-     static final int COLUMN_OPPONENT = 1;
-     static final int COLUMN_EVENT = 2;
-     static final int COLUMN_METHOD = 3;
-     static final int COLUMN_ROUND = 4;
-     static final int COLUMN_TIME = 5;
+    static final int COLUMN_RESULT = 0;
+    static final int COLUMN_OPPONENT = 1;
+    static final int COLUMN_EVENT = 2;
+    static final int COLUMN_METHOD = 3;
+    static final int COLUMN_ROUND = 4;
+    static final int COLUMN_TIME = 5;
   }
-
 }

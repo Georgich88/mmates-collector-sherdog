@@ -15,7 +15,6 @@ import java.util.List;
 
 import static com.georgeisaev.mmatescollectorsherdog.common.SherdogParserConstants.BASE_HTTPS_URL;
 
-
 @Slf4j
 @Getter
 @AllArgsConstructor
@@ -42,7 +41,7 @@ public enum FighterAttributeParserCommand
       ".fighter-data .bio-holder tr:nth-child(2) td:nth-child(2) b[itemprop=\"height\"]"),
   WEIGHT_LBS("weightLbs", ".fighter-data .bio-holder tr:nth-child(2) td:nth-child(2)"),
   // picture
-  PICTURE_URL("pictureUrl",".module.bio_fighter.vcard .fighter-info img[itemprop=\"image\"]") {
+  PICTURE_URL("pictureUrl", ".module.bio_fighter.vcard .fighter-info img[itemprop=\"image\"]") {
     @Override
     public void parse(Document doc, Fighter.FighterBuilder builder) {
       final Elements picture = doc.select(getSelector());
