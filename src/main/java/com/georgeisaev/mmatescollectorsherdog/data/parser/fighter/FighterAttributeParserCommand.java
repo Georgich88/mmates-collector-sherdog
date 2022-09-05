@@ -7,9 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.util.Collection;
 import java.util.List;
+
+import static com.georgeisaev.mmatescollectorsherdog.common.SherdogParserConstants.BASE_HTTPS_URL;
 
 
 @Slf4j
@@ -36,7 +40,16 @@ public enum FighterAttributeParserCommand
   WEIGHT_KG(
       "weightKg",
       ".fighter-data .bio-holder tr:nth-child(2) td:nth-child(2) b[itemprop=\"height\"]"),
-  WEIGHT_LBS("weightLbs", ".fighter-data .bio-holder tr:nth-child(2) td:nth-child(2)");
+  WEIGHT_LBS("weightLbs", ".fighter-data .bio-holder tr:nth-child(2) td:nth-child(2)"),
+  // picture
+  PICTURE_URL("pictureUrl",".module.bio_fighter.vcard .fighter-info img[itemprop=\"image\"]") {
+    @Override
+    public void parse(Document doc, Fighter.FighterBuilder builder) {
+      final Elements picture = doc.select(getSelector());
+      final String pictureUrl = BASE_HTTPS_URL + picture.attr("src").trim();
+      builder.pictureUrl(pictureUrl);
+    }
+  };
 
   /** Attribute name */
   String attribute;
@@ -44,7 +57,7 @@ public enum FighterAttributeParserCommand
   /** CSS-like element selector, that finds elements matching a query */
   String selector;
 
-  public static Collection<FighterAttributeParserCommand> availableCommands() {
+  public static Collection<JsopAttributeParserCommand<Fighter.FighterBuilder>> availableCommands() {
     return List.of(values());
   }
 }
